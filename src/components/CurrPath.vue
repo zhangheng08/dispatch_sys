@@ -62,6 +62,10 @@ emitter.on('onNavSelected', (pathVal:any) => {
         pathName.value = '班次管理'
         currPathArr.push({to:"/servsch", path:"班次管理", pathValue:pathVal})
         currPathArr.push({to:pathVal, path:pathName.value, pathValue:"/servsch" + pathVal})
+    } else if(pathVal == '/dispprc') {
+        pathName.value = '车辆调度单'
+        currPathArr.push({to:"/dispprc", path:"车辆调度单", pathValue:pathVal})
+        currPathArr.push({to:pathVal, path:pathName.value, pathValue:"/dispprc" + pathVal})
     }
     
     emitter.emit('addTab', {targetName:pathName.value, targetKey:pathVal})

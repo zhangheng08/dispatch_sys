@@ -7,14 +7,20 @@
             <template #title><span
                     style="font-size: 18px; font-weight: bold; color: white; margin-left: 10px;in">氢动力科技</span></template>
         </el-menu-item>
-        <el-sub-menu index="/dashbd" class="menu-item" @click="emitter.emit('onNavSelected', '/dashbd')">
+        <!-- <el-sub-menu index="/dashbd" class="menu-item" @click="emitter.emit('onNavSelected', '/dashbd')">
             <template #title>
                 <el-icon>
                     <Histogram />
                 </el-icon>
                 <span>数据面板</span>
             </template>
-        </el-sub-menu>
+        </el-sub-menu> -->
+        <el-menu-item index="/dashbd" class="menu-item" @click="emitter.emit('onNavSelected', '/dashbd')">
+            <el-icon>
+                <Histogram />
+            </el-icon>
+            <template #title>数据面板</template>
+        </el-menu-item>
         <el-sub-menu index="111" class="sub-menu">
             <template #title>
                 <el-icon>
@@ -22,11 +28,11 @@
                 </el-icon>
                 <span>业务管理</span>
             </template>
-            <el-menu-item index="/intelrmd" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/intelrmd')">固定班线</el-menu-item>
-            <el-menu-item index="/shuschd" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/shuschd')">临时班线</el-menu-item>
-            <el-menu-item index="/busppl" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/busppl')">大型项目</el-menu-item>
+            <!-- <el-menu-item index="/intelrmd" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/intelrmd')">固定班线</el-menu-item> -->
+            <el-menu-item index="/shuschd" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/shuschd')">零散用车</el-menu-item>
+            <!-- <el-menu-item index="/busppl" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/busppl')">大型项目</el-menu-item>
             <el-menu-item index="/addhpl" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/addhpl')">承包车</el-menu-item>
-            <el-menu-item index="/addhp2" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/addhp2')">直通车</el-menu-item>
+            <el-menu-item index="/addhp2" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/addhp2')">直通车</el-menu-item> -->
         </el-sub-menu>
         <el-sub-menu index="1111" class="sub-menu">
             <template #title>
@@ -35,12 +41,14 @@
                 </el-icon>
                 <span>运营调度</span>
             </template>
-            <el-menu-item index="/servsch" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/servsch')">班次管理</el-menu-item>
-            <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">车辆调度单</el-menu-item>
-            <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">薪资信息</el-menu-item>
+            <!-- <el-menu-item index="/servsch" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/servsch')">班次管理</el-menu-item> -->
+            <el-menu-item index="/dispprc" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/dispprc')">
+                <el-badge :value="11" class="badge-sty" :max="10">车辆调度</el-badge>
+            </el-menu-item>
+            <!-- <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">薪资信息</el-menu-item>
             <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">评价信息</el-menu-item>
             <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">历史工单查询</el-menu-item>
-            <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">调度提醒</el-menu-item>
+            <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">调度提醒</el-menu-item> -->
         </el-sub-menu>
         <el-menu-item index="/busmng" class="menu-item" @click="emitter.emit('onNavSelected', '/busmng')">
             <el-icon>
@@ -54,7 +62,9 @@
             </el-icon>
             <template #title>驾驶员管理</template>
         </el-menu-item>
-        <el-sub-menu index="112" class="sub-menu">
+
+
+        <!-- <el-sub-menu index="112" class="sub-menu">
             <template #title>
                 <el-icon>
                     <CreditCard />
@@ -68,19 +78,6 @@
             <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">支付设置</el-menu-item>
             <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">收款分类统计</el-menu-item>
         </el-sub-menu>
-        <!-- <el-sub-menu index="116" class="sub-menu">
-            <template #title>
-                <el-icon>
-                    <List />
-                </el-icon>
-                <span>运营调度</span>
-            </template>
-            <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">车辆调度单</el-menu-item>
-            <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">薪资信息</el-menu-item>
-            <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">评价信息</el-menu-item>
-            <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">历史工单查询</el-menu-item>
-            <el-menu-item index="/" class="sub-menu-item" @click="emitter.emit('onNavSelected', '/')">调度提醒</el-menu-item>
-        </el-sub-menu> -->
         <el-menu-item index="/rotcus" class="menu-item" @click="emitter.emit('onNavSelected', '/rotcus')">
             <el-icon>
                 <MapLocation />
@@ -92,7 +89,9 @@
                 <Key />
             </el-icon>
             <template #title>权限设置</template>
-        </el-menu-item>
+        </el-menu-item> -->
+
+
     </el-menu>
 </template>
 
@@ -136,6 +135,11 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+
+.badge-sty {
+    line-height: 20px;
+    width: 70px;
+}
 
 .logo-eara {
     height: 100px;

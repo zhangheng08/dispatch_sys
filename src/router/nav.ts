@@ -4,11 +4,12 @@ import dash_brd from '@/pages/DashBroad.vue'
 import driver_mng from '@/pages/DriverManagement.vue'
 import bus_mng from '@/pages/BusManagement_v2.vue'
 import route_cus from '@/pages/RouteCustomization.vue'
-import shuttle_schd from '@/pages/ShuttlebusScheduling.vue'
+import shuttle_schd from '@/pages/ScatteredServices.vue'
 import intelli_rmd from '@/pages/IntelligentRemind.vue'
 import add_hyd_path_pln from '@/pages/AddingHydrogenPathPlanning.vue'
 import bus_path_pln from '@/pages/BusPathPlanning.vue'
 import service_scheduling from '@/pages/ServiceScheduling.vue'
+import dispatcher_proc from '@/pages/DispatcherProcess.vue'
 
 const router = createRouter({
     history:createWebHashHistory(),
@@ -21,7 +22,8 @@ const router = createRouter({
         {name:'intelligent_remind', path:'/intelrmd', component:intelli_rmd},
         {name:'add_hydrogen_path_planning', path:'/addhpl', component:add_hyd_path_pln},
         {name:'service_scheduling', path:'/servsch', component:service_scheduling},
-        {name:'bus_path_planning', path:'/busppl', component:bus_path_pln}
+        {name:'bus_path_planning', path:'/busppl', component:bus_path_pln},
+        {name:'dispatcher_proc', path:'/dispprc', component:dispatcher_proc}
     ]
 })
 

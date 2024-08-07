@@ -11,6 +11,7 @@ import { ref, reactive } from 'vue'
 import emitter from '@/utils/emitter'
 import { ElTabPane } from 'element-plus';
 
+
 interface TabCard {
   title: string
   tabKey: string
@@ -84,7 +85,7 @@ const removeTab = function (targetKey: string) {
 <style scoped>
 
 :deep() .el-tabs__header .el-tabs__nav {
-  border: 0px solid transparent;
+  border: 1px solid transparent;
   border-bottom: 1px dotted rgb(227, 227, 227);
   border-radius: 4px 4px 0 0;
   box-sizing: border-box;
