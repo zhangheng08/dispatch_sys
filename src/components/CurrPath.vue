@@ -44,7 +44,7 @@ emitter.on('onNavSelected', (pathVal:any) => {
         pathName.value = '车辆管理'
         currPathArr.push({to:pathVal, path:pathName.value, pathValue:"/busmng" + pathVal})
     } else if (pathVal == '/shuschd') {
-        pathName.value = '临时班线'
+        pathName.value = '零散用车'
         // currPathArr.push({to:"/dashbd", path:"班车调度", pathValue:pathVal})
         currPathArr.push({to:pathVal, path:pathName.value, pathValue:"/rotcus" + pathVal})
     } else if (pathVal == '/intelrmd') {
@@ -64,7 +64,7 @@ emitter.on('onNavSelected', (pathVal:any) => {
         currPathArr.push({to:pathVal, path:pathName.value, pathValue:"/servsch" + pathVal})
     } else if(pathVal == '/dispprc') {
         pathName.value = '车辆调度单'
-        currPathArr.push({to:"/dispprc", path:"车辆调度单", pathValue:pathVal})
+        currPathArr.push({to:"/dispprc", path:"车辆调度", pathValue:pathVal})
         currPathArr.push({to:pathVal, path:pathName.value, pathValue:"/dispprc" + pathVal})
     }
     

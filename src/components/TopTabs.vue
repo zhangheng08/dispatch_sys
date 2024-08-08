@@ -1,5 +1,6 @@
 <template>
-  <el-tabs type="card" closable tab-position="bottom" @tab-remove="removeTab" v-model="currentTabKey" @tab-click="clickTabPane">
+  <el-tabs height='100' style="margin-top: 10px;" type="card" closable tab-position="top" @tab-remove="removeTab"
+    v-model="tabCardStore.currentTabKey" @tab-click="clickTabPane">
     <el-tab-pane v-for="item in cards" :key="item.tabKey" :label="item.title" :name="item.tabKey">
     </el-tab-pane>
   </el-tabs>
@@ -7,19 +8,29 @@
 
 <script setup lang="ts" name="TopTabs">
 
-import { ref, reactive } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import type { TabsPaneContext } from 'element-plus'
+import { ref, reactive, onMounted } from 'vue'
 import emitter from '@/utils/emitter'
 import { ElTabPane } from 'element-plus';
+import { tabCard, type TabItem } from '@/store/TabCard'
 
+const tabCardStore = tabCard()
+const router = useRouter()
+const route = useRoute()
 
-interface TabCard {
-  title: string
-  tabKey: string
-}
+var cards: TabItem[] = reactive(tabCardStore.list);
 
-let cards: TabCard[] = reactive([{tabKey:"/dashbd", title:"数据面板"}]);
-
-const currentTabKey = ref('/dashbd')
+onMounted(() => {
+  if(tabCardStore.currentTabKey == '') {
+    tabCardStore.currentTabKey = '/dashbd'
+    cards.push({tabKey:tabCardStore.currentTabKey, title:"数据面板"})
+    router.push(tabCardStore.currentTabKey)
+    emitter.emit('onNavSelected', tabCardStore.currentTabKey)
+  } else {
+    emitter.emit('onNavSelected', tabCardStore.currentTabKey)
+  }
+ })
 
 emitter.on('addTab', (obj: any) => {
 
@@ -41,39 +52,46 @@ emitter.on('addTab', (obj: any) => {
     })
   }
 
-  currentTabKey.value = newTabKey
+  tabCardStore.currentTabKey = newTabKey
 })
 
 emitter.on('removeTab', (targetName: any) => {
   removeTab(targetName)
 })
 
-const clickTabPane = function (pane: any) {
-  // ElTabPane
-  // currentTabKey.value = pane.props.name
-
+const clickTabPane = (tab: TabsPaneContext, event: Event) => {
+  const path: string = String(tab.props.name)
+  tabCardStore.currentTabKey = path
+  tabCardStore.leftNavActive = path
+  emitter.emit('onNavSelected', path)
+  router.push(path)
 }
 
 const removeTab = function (targetKey: string) {
 
-  if(cards.length == 1) return;
+  if (cards.length == 1) return;
 
-  let tabs:TabCard[] = [];
+  let tabs: TabItem[] = [];
 
   Object.assign(tabs, cards)
-  
-  let activeName = currentTabKey.value
-  
+
+  let activeName = tabCardStore.currentTabKey
+
   tabs.forEach((tab, index) => {
-      if (tab.tabKey === targetKey && tab.tabKey === activeName) {
+    if (tab.tabKey === targetKey) {
+      if (tab.tabKey === activeName) {
         const nextTab = tabs[index + 1] || tabs[index - 1]
         if (nextTab) {
           activeName = nextTab.tabKey
         }
+        router.back()
+      } else {
+        router.removeRoute(tab.tabKey)
       }
-    })
+    }
+  })
 
-  currentTabKey.value = activeName
+  tabCardStore.currentTabKey = activeName
   tabs = tabs.filter((tab) => tab.tabKey !== targetKey);
   cards.length = 0
   Object.assign(cards, tabs)
@@ -83,7 +101,6 @@ const removeTab = function (targetKey: string) {
 
 
 <style scoped>
-
 :deep() .el-tabs__header .el-tabs__nav {
   border: 1px solid transparent;
   border-bottom: 1px dotted rgb(227, 227, 227);

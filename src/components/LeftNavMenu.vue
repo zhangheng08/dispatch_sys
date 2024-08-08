@@ -1,6 +1,6 @@
 <template>
     <el-menu style="height: 100%;" text-color="#fff" class="aside" :collapse="isCollapse" @open="handleOpen" @close="handleClose" router="true"
-        default-active="/dashbd" unique-opened="true">
+        :default-active="tabCardStore.leftNavActive" unique-opened="true">
         <el-menu-item index="1" class="logo-eara">
             <!-- <el-image :src="local_logo" style="width: 30px; height: 30px;"/> -->
             <img :src="local_logo" style="width: 30px; height: 30px;" />
@@ -60,7 +60,7 @@
             <el-icon>
                 <Avatar />
             </el-icon>
-            <template #title>驾驶员管理</template>
+            <template #title>司机管理</template>
         </el-menu-item>
 
 
@@ -97,7 +97,7 @@
 
 <script setup lang="ts" name="LeftNavMenu">
 
-import { ref, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 import {
     Histogram,
@@ -115,10 +115,17 @@ import local_logo from '@/assets/hpts.png'
 
 import emitter from '@/utils/emitter'
 
+import { tabCard } from '@/store/TabCard'
+
+const tabCardStore = tabCard()
+
 let isCollapse = ref(false)
+
+let defaultActive = ref('/dashbd')
 
 const handleOpen = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
+    tabCardStore.leftNavActive = key
 }
 const handleClose = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)

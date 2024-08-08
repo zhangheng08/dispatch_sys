@@ -132,8 +132,6 @@ import { loginAfterward } from '@/store/LoginAfterward'
 var userStore = useUserStore()
 var loginAfterwardStore = loginAfterward()
 
-var token = ref('')
-
 var axio = axios.create({
   baseURL: 'http://localhost:8088/API',
   timeout: 3000,

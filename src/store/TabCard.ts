@@ -10,7 +10,9 @@ const _list = Array<TabItem>()
 export const tabCard = defineStore('tabCard', {
   state: () => {
     return {
-      list:_list
+      list:_list,
+      currentTabKey:'',
+      leftNavActive:''
     }
   },
 
