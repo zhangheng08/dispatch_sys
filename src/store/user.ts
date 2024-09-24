@@ -7,6 +7,7 @@ export const useUserStore = defineStore('storeUser', {
       userName: '',
       accessToken: '',
       roleCode:'',
+      sex:'',
       roleName:''
     }
   },

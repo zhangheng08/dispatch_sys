@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export interface flow {
+export interface Flow {
   orderCode: string
   currentStatus: string
   statusCode: string
@@ -10,12 +10,15 @@ export interface flow {
   flowCode: string
 }
 
-const _list = Array<flow>() 
+const _list = Array<Flow>() 
 
 export const AssignFlowStore = defineStore('assign_flow_list', {
-  state() {
+  state: () => {
     return {
       list: _list
     }
+  },
+  persist: {
+    enable: true
   }
 })

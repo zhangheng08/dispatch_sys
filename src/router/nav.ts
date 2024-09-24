@@ -2,7 +2,7 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 
 import dash_brd from '@/pages/DashBroad.vue'
 import driver_mng from '@/pages/DriverManagement.vue'
-import bus_mng from '@/pages/BusManagement_v2.vue'
+import bus_mng from '@/pages/BusManagement_v3.vue'
 import route_cus from '@/pages/RouteCustomization.vue'
 import shuttle_schd from '@/pages/ScatteredServices.vue'
 import intelli_rmd from '@/pages/IntelligentRemind.vue'

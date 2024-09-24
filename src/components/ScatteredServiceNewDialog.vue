@@ -1,10 +1,10 @@
 <template>
-    <el-dialog v-model="dialogFormVisible" title="零散用车业务" width="1000" draggable @open="onDialogOpen"
-        @close="onDialogClose">
+    <el-dialog v-model="dialogFormVisible" title="创建派车单" width="1200" style="height: 85%; margin-top: 60px;"
+        draggable @open="onDialogOpen" @close="onDialogClose" destroy-on-close="true">
 
-        <el-row>
+        <el-row style="height: 600px;">
 
-            <el-col :span="14">
+            <el-col :span="12">
 
                 <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="auto" class="form-style"
                     :label-position="labelPosition" :size="formSize" status-icon>
@@ -48,16 +48,14 @@
 
                     <el-form-item label="时间安排" required>
                         <el-time-picker v-model="ruleForm.serviceTime" is-range range-separator="至"
-                            start-placeholder="开始时间" end-placeholder="结束时间" :disabled="finishCreated" 
-                            :disabled-minutes="disabledMinutes"
-                            :disabled-seconds="disabledSeconds"/>
+                            start-placeholder="开始时间" end-placeholder="结束时间" :disabled="finishCreated"
+                            :disabled-minutes="disabledMinutes" :disabled-seconds="disabledSeconds" />
                     </el-form-item>
 
                     <el-form-item label="行程安排" prop="desc">
                         <el-input v-model="ruleForm.desc" type="textarea" maxlength="200" show-word-limit
-                            :disabled="finishCreated" 
-                            :disabled-minutes="disabledMinutes"
-                            :disabled-seconds="disabledSeconds"/>
+                            :disabled="finishCreated" :disabled-minutes="disabledMinutes"
+                            :disabled-seconds="disabledSeconds" />
                     </el-form-item>
 
                     <!-- <el-form-item label="调度负责人" prop="dispatchObligation">
@@ -88,9 +86,10 @@
                         </el-col>
                         <el-col :span="21">
                             <el-form-item label="调度负责人" prop="dispatchObligation">
-                                <el-select v-model="ruleForm2.dispatchObligation" style="width: 180px" :disabled="finishAssign">
+                                <el-select v-model="ruleForm2.dispatchObligation" style="width: 180px"
+                                    :disabled="finishAssign">
                                     <el-option v-for="item in dispatchers" :key="item.name" :label="item.realName"
-                                        :value="item.name"/>
+                                        :value="item.name" />
                                 </el-select>
                             </el-form-item>
                         </el-col>
@@ -101,50 +100,16 @@
                     <el-form-item v-show="!showSubmit">
                         <el-button type="primary" @click="confirmAssign(ruleFormRef2)"
                             style="margin-top: 50px;">确认</el-button>
+                        <el-button @click="console.log('todo cancel service')"
+                            style="margin-top: 50px;">取消业务</el-button>
                     </el-form-item>
 
                 </el-form>
 
             </el-col>
 
-            <el-col :span="10">
-                <el-scrollbar height="600" style="padding-right: 10px;">
-                    <el-timeline style="max-width: 600px">
-                        <el-timeline-item v-for="item in flowStore.list" :key="item.orderCode" center
-                            :timestamp="format(item.activeTime == null ? new Date() : item.activeTime, 'yyyy/MM/dd')"
-                            placement="top">
-                            <el-card :body-style="{ 'padding': '10px 0px 10px 20px', 'font-size': '12px' }">
-                                <h4><span style="color: #D24C79;">{{ item.statusCode }}</span></h4>
-                                <p>执行人》<el-tag type="primary" size="small" round>{{ item.assignTo }}</el-tag></p>
-                                <p>开始于》{{ format(item.activeTime == null ? new Date() : item.activeTime, 'yyyy-MM-dd HH: mm: ss') }}</p>
-                                <p>完成于》{{ item.doneTime == null ? '' : format(item.doneTime == null ? new Date() :
-                                    item.doneTime, 'yyyy-MM-dd HH:mm:ss') }}</p>
-                                <!-- <p><el-tag type="warning">{{stempStatus}}</el-tag></p> -->
-                            </el-card>
-                        </el-timeline-item>
-                        <!-- <el-timeline-item timestamp="2024/6/29" placement="top">
-                            <el-card :body-style="{ 'padding': '10px 0px 10px 20px', 'font-size': '12px' }">
-                                <h4>待调度》业务单号:QDLKJ2024-0628008</h4>
-                                <p>执行人》陈宇(调度员)</p>
-                                <p>完成于》2024/6/29 10:12:30</p>
-                            </el-card>
-                        </el-timeline-item>
-                        <el-timeline-item center timestamp="2018/4/2" placement="top">
-                            <el-card :body-style="{ 'padding': '10px 0px 10px 20px', 'font-size': '12px' }">
-                                <h4>待确认》业务单号:QDLKJ2024-0628008</h4>
-                                <p>执行人》邵凯(主管)</p>
-                                <p>完成于》2024/6/29 10:12:30</p>
-                            </el-card>
-                        </el-timeline-item>
-                        <el-timeline-item timestamp="2018/4/2" placement="top">
-                            <el-card :body-style="{ 'padding': '10px 0px 10px 20px', 'font-size': '12px' }">
-                                <h4>待确认》业务单号:QDLKJ2024-0628008</h4>
-                                <p>执行人》刘明利(司机) 车辆：京BHD90881</p>
-                                <p>完成于》2024/6/29 10:12:30</p>
-                            </el-card>
-                        </el-timeline-item> -->
-                    </el-timeline>
-                </el-scrollbar>
+            <el-col :span="12">
+                <ScatterFlowChart />
             </el-col>
 
         </el-row>
@@ -163,18 +128,20 @@ import emitter from '@/utils/emitter'
 import { scatterDispatcherDataStore, type ScatterDispatcher } from '@/store/ScatterDispatcher'
 import { ScatterTaskTypeDataStore, type ScatterTaskType } from '@/store/ScatterTaskInfo'
 import { ScatteClerkDataStore, type ScatterClerk } from '@/store/ScatterClerk'
-import { AssignFlowStore, type flow } from '@/store/AssignFlow'
-
+import { AssignFlowStore, type Flow } from '@/store/AssignFlow'
+import ScatterFlowChart from './ScatterFlowChart.vue'
+import VehicleAssignDocument from './VehicleAssignDocument.vue'
 import { useUserStore } from '@/store/user'
-
 import axios from 'axios'
+import { baseUrlStore } from '@/store/BaseUrl'
+var baseUrl = baseUrlStore()
 
 var flowStore = AssignFlowStore()
 var userStore = useUserStore()
 var token = ref('')
 
 var axio = axios.create({
-    baseURL: 'http://localhost:8088/API',
+    baseURL: baseUrl.host,
     timeout: 3000,
     headers: {
         "Authorization": userStore.accessToken
@@ -198,9 +165,9 @@ var dialogFormVisible = ref(false)
 var customerName = ref("")
 var currentServiceNo = ref('生成中...')
 var currentOrderCodeIdentical = ref(-1)
-let dispatchers = ref(dispaterDataStore.list)
-let tasks = ref(taskTypesStore.list)
-let clerks = ref(clerkStore.list)
+var dispatchers = ref(dispaterDataStore.list)
+var tasks = ref(taskTypesStore.list)
+var clerks = ref(clerkStore.list)
 var stempStatus = ref('创建中')
 
 
@@ -240,6 +207,7 @@ interface RuleForm {
     type: string[]
     resource: string
     desc: string
+    creater: string
 }
 
 interface RuleForm2 {
@@ -265,21 +233,22 @@ const ruleForm = reactive<RuleForm>({
     type: [],
     resource: '',
     desc: '',
+    creater: userStore.userName
 })
 
 const makeRange = (start: number, end: number) => {
-  const result: number[] = []
-  for (let i = start; i <= end; i++) {
-    result.push(i)
-  }
-  return result
+    const result: number[] = []
+    for (let i = start; i <= end; i++) {
+        result.push(i)
+    }
+    return result
 }
 
 const disabledMinutes = () => {
-  return makeRange(1, 59)
+    return makeRange(1, 59)
 }
 const disabledSeconds = () => {
-  return makeRange(1, 59)
+    return makeRange(1, 59)
 }
 
 const ruleFormRef2 = ref<FormInstance>()
@@ -298,61 +267,84 @@ watch(() => ruleForm.serviceDate, (newVal, oldVal) => {
 
 var onDialogOpen = function () {
 
-    axio.post('/scatter/dispatchers')
-        .then(function (response) {
+    if (currentServiceNo.value.length != 0 && currentServiceNo.value != '生成中...') {
 
-            if (response.data.code == 200) {
-                var result = response.data.data
-                for (var i = 0; i < result.length; i++) {
-                    var sd: ScatterDispatcher = result[i]
-                    dispatchers.value.push(sd)
+        getFlowByOrderCode(currentServiceNo.value)
+
+        axio.post('/scatter/dispatchers')
+            .then(function (response) {
+
+                if (response.data.code == 200) {
+                    var result = response.data.data
+                    for (var i = 0; i < result.length; i++) {
+                        var sd: ScatterDispatcher = result[i]
+                        dispatchers.value.push(sd)
+                    }
                 }
-            }
 
-        }).catch(function (error) {
-            console.log(error)
-        });
+            }).catch(function (error) {
+                console.log(error)
+            });
 
-    axio.post('/scatter/taskTypes/2')
-        .then(function (response) {
-            if (response.data.code == 200) {
-                var result = response.data.data
-                for (var i = 0; i < result.length; i++) {
-                    var st: ScatterTaskType = result[i]
-                    tasks.value.push(st)
+    } else {
+        axio.post('/scatter/dispatchers')
+            .then(function (response) {
+
+                if (response.data.code == 200) {
+                    var result = response.data.data
+                    for (var i = 0; i < result.length; i++) {
+                        var sd: ScatterDispatcher = result[i]
+                        dispatchers.value.push(sd)
+                    }
                 }
-            }
 
-        }).catch(function (error) {
-            console.log(error)
-        });
+            }).catch(function (error) {
+                console.log(error)
+            });
 
-    axio.post('/scatter/clerks')
-        .then(function (response) {
-            if (response.data.code == 200) {
-                var result = response.data.data
-                for (var i = 0; i < result.length; i++) {
-                    var sk: ScatterClerk = result[i]
-                    clerks.value.push(sk)
+        axio.post('/scatter/taskTypes/2')
+            .then(function (response) {
+                if (response.data.code == 200) {
+                    var result = response.data.data
+                    for (var i = 0; i < result.length; i++) {
+                        var st: ScatterTaskType = result[i]
+                        tasks.value.push(st)
+                    }
                 }
-            }
 
-        }).catch(function (error) {
-            console.log(error)
-        });
+            }).catch(function (error) {
+                console.log(error)
+            });
 
-    isOrderSaved.value = false
-    axio.post('/scatter/serviceCodeGen', { "prefix": "QDLKJ", "creator": "shaojie" })
-        .then(function (response) {
-            if (response.data.code == 200) {
-                var result = response.data
-                currentServiceNo.value = result.serviceOrderCode
-                currentOrderCodeIdentical.value = result.data.identical
-                ruleForm.serviceNo = currentServiceNo.value
-            }
-        }).catch(function (error) {
-            console.log(error)
-        });
+        axio.post('/scatter/clerks')
+            .then(function (response) {
+                if (response.data.code == 200) {
+                    var result = response.data.data
+                    for (var i = 0; i < result.length; i++) {
+                        var sk: ScatterClerk = result[i]
+                        clerks.value.push(sk)
+                    }
+                }
+
+            }).catch(function (error) {
+                console.log(error)
+            });
+
+        isOrderSaved.value = false
+        axio.post('/scatter/serviceCodeGen', { "prefix": "QDLKJ", "creator": "shaojie" })
+            .then(function (response) {
+                if (response.data.code == 200) {
+                    var result = response.data
+                    currentServiceNo.value = result.serviceOrderCode
+                    currentOrderCodeIdentical.value = result.data.identical
+                    ruleForm.serviceNo = currentServiceNo.value
+                }
+            }).catch(function (error) {
+                console.log(error)
+            });
+    }
+
+
 }
 
 var onDialogClose = function () {
@@ -363,23 +355,27 @@ var onDialogClose = function () {
     axio.post('/scatter/serviceCodeUsage', { "identical": currentOrderCodeIdentical.value, "usageStatus": status })
         .then(function (response) {
             if (response.data.code == 200) {
+
                 var result = response.data
                 ruleForm.serviceNo = result.serviceOrderCode;
                 currentOrderCodeIdentical.value = result.data.identical
-                ruleFormRef.value.resetFields()
-                isOrderSaved.value = false
-                showSubmit.value = true
-                finishCreated.value = false
-                finishAssign.value = false
-                dialogFormVisible.value = false
-                clerks.value.length = 0
-                tasks.value.length = 0
-                dispatchers.value.length = 0
-                flowStore.list.length = 0
+
             }
         }).catch(function (error) {
             console.log(error)
         });
+
+    currentServiceNo.value = '生成中...'
+    ruleFormRef.value.resetFields()
+    isOrderSaved.value = false
+    showSubmit.value = true
+    finishCreated.value = false
+    finishAssign.value = false
+    dialogFormVisible.value = false
+    clerks.value.length = 0
+    tasks.value.length = 0
+    dispatchers.value.length = 0
+    flowStore.list.length = 0
 }
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -489,7 +485,8 @@ const confirmAssign = async (formEl: FormInstance | undefined) => {
         if (valid) {
             axio.post('/scatter/flowSta', { 'orderCode': ruleForm.serviceNo, 'currentStatus': 'active', 'statusCode': 'dispatch', 'assignTo': ruleForm2.dispatchObligation }).then(function (response) {
                 if (response.data.code == 200) {
-                    flowStore.list.push(response.data.data)
+                    flowStore.list = response.data.data
+                    emitter.emit('refreshNodeData')
                     finishAssign.value = true
                 }
             }).catch(function (error) {
@@ -527,6 +524,7 @@ const getFlowByOrderCode = function (orderCode: string) {
     axio.post(url).then(function (response) {
         if (response.data.code == 200) {
             flowStore.list = response.data.data
+            emitter.emit('refreshNodeData')
         }
     }).catch(function (error) {
         console.log(error)

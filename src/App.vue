@@ -60,7 +60,7 @@
           </el-row>
         </el-col>
       </el-row>
-    </el-container >
+    </el-container>
 
     <el-aside width="300" style="height: 100%;" v-show="loginAfterwardStore.menuToShow">
       <LeftNavMenu />
@@ -77,7 +77,7 @@
             <CurrPath />
           </el-col>
           <el-col :span="15">
-            <TopToolBar />
+            <TopToolBar :userName="userStore.userName" :userSex="userStore.sex" />
           </el-col>
         </el-row>
         <el-row style="height: 42%; border-bottom: 1px dotted rgb(226, 226, 226);">
@@ -127,13 +127,14 @@ import { ref, onMounted } from 'vue'
 
 import { useUserStore } from '@/store/user'
 import { loginAfterward } from '@/store/LoginAfterward'
-
+import { baseUrlStore } from '@/store/BaseUrl'
+var baseUrl = baseUrlStore()
 
 var userStore = useUserStore()
 var loginAfterwardStore = loginAfterward()
 
 var axio = axios.create({
-  baseURL: 'http://localhost:8088/API',
+  baseURL: baseUrl.host,
   timeout: 3000,
   headers: {
     "Authorization": userStore.accessToken
@@ -147,19 +148,19 @@ var password = ref('')
 
 onMounted(() => {
 
-//   axio.post('/authValid')
-//     .then(function (response) {
-//       if (response.data.resultCode === 'SUCCESS') {
-//         loginToShow.value = false;
-//         mainTabToShow.value = true;
-//         menuToShow.value = true;
-//       }
-//     }).catch(function (error) {
-//       loginToShow.value = true;
-//       mainTabToShow.value = false;
-//       menuToShow.value = false;
-//     });
- })
+  //   axio.post('/authValid')
+  //     .then(function (response) {
+  //       if (response.data.resultCode === 'SUCCESS') {
+  //         loginToShow.value = false;
+  //         mainTabToShow.value = true;
+  //         menuToShow.value = true;
+  //       }
+  //     }).catch(function (error) {
+  //       loginToShow.value = true;
+  //       mainTabToShow.value = false;
+  //       menuToShow.value = false;
+  //     });
+})
 
 var toLogin = function () {
 
@@ -171,6 +172,7 @@ var toLogin = function () {
       userStore.accessToken = 'Bearer ' + response.data.signatureTokenValue
       userStore.userName = response.data.userInfo.realName
       userStore.userCode = response.data.userInfo.name
+      userStore.sex = response.data.userInfo.sex
       loginAfterwardStore.afterward(false, true, true)
     }
   }).catch(function (error) {

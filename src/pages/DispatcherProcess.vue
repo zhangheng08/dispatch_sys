@@ -10,24 +10,24 @@
             <el-table-column prop="serv_princ" label="服务主体" width="220" />
             <el-table-column prop="obligation" label="业务负责人" width="150" />
             <el-table-column prop="type_id" label="订单类型" width="150" />
-            <el-table-column prop="service_time" label="业务日期" width="150" />
+            <el-table-column prop="service_date" label="业务日期" width="150" />
             <el-table-column prop="dispatcher" label="调度员" width="150" />
             <el-table-column prop="vehicleuse" label="用车数量" width="150" />
             <el-table-column prop="serv_desc" label="任务描述" width="220" />
             <el-table-column prop="start_time" label="开始时间" width="150" />
             <el-table-column prop="end_time" label="结束时间" width="150" />
-            <el-table-column prop="creator" label="创建人" width="150" />
-            <el-table-column prop="creat_time" label="创建时间" width="150" />
+            <el-table-column prop="creater" label="创建人" width="150" />
+            <el-table-column prop="create_time" label="创建时间" width="150" />
             <el-table-column prop="status_code" label="业务状态" width="120" fixed="right">
                 <template #default="scope">
                     <el-tag :type="tagTypeSelector(scope.row.status_code)" disable-transitions>
                         {{ scope.row.status_value }}</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column fixed="right" label="操作" width="80">
+            <el-table-column fixed="right" label="调度" width="80">
                 <template #default="scope">
                     <el-button link type="primary" size="small" @click="toShowDrawer(scope.row)">
-                        去处理
+                        {{ scope.row.current_status == 'active' ? '待办':'已办结' }}
                     </el-button>
                 </template>
             </el-table-column>
@@ -213,7 +213,7 @@ import { ElDrawer, ElMessageBox, ElMessage, ElNotification } from 'element-plus'
 import PageTop from '@/components/PageTop.vue';
 import SchedulingDetail from '@/components/SchedulingDetail.vue'
 import { useUserStore } from '@/store/user'
-import { dispatchOrderStore, type DispatchOrder } from "@/store/DispatchOrders"
+import { dispatchOrderStore } from "@/store/DispatchOrders"
 import { ScatteClerkDataStore, type ScatterClerk } from '@/store/ScatterClerk'
 import {
     Iphone,
@@ -226,6 +226,8 @@ import {
 import axios from 'axios'
 import { format } from 'date-fns'
 import emitter from '@/utils/emitter';
+import { baseUrlStore } from '@/store/BaseUrl'
+var baseUrl = baseUrlStore()
 
 var userStore = useUserStore()
 var orderStore = dispatchOrderStore()
@@ -233,7 +235,7 @@ var clerkStore = ScatteClerkDataStore()
 let clerks = ref(clerkStore.list)
 
 var axio = axios.create({
-    baseURL: 'http://localhost:8088/API',
+    baseURL: baseUrl.host,
     timeout: 3000,
     headers: {
         "Authorization": userStore.accessToken
@@ -253,8 +255,32 @@ var pageSize = ref(10)
 var orderCode = ref('')
 var rowClick = ref('')
 var approve = ref('')
+var toCope = ref('待调度')
 
-var selectedOrder: DispatchOrder = {
+interface DispatchOrderVo {
+  id: number
+  code: string
+  contract_code: string
+  obligation: string
+  serv_princ: string
+  type_id: number
+  task_type_code: string
+  service_date: Date|string
+  line_id: number
+  vehicleuse: number
+  start_time: Date|string
+  end_time: Date|string
+  dispatcher: string
+  serv_desc: string
+  status_code:string
+  status_value: string
+  create_time: Date|string
+  creater: string
+  flow_code: string
+  current_status: string
+}
+
+var selectedOrder:DispatchOrderVo = {
     id: 0,
     code: '',
     contract_code: '',
@@ -266,22 +292,31 @@ var selectedOrder: DispatchOrder = {
     vehicleuse: 0,
     status_code: '',
     status_value: '',
+    service_date: new Date(),
     start_time: new Date(),
     end_time: new Date(),
     dispatcher: '',
     serv_desc: '',
     create_time: new Date(),
-    flow_code: ''
+    flow_code: '',
+    current_status: '',
+    creater: ''
 }
 
 var selectedOrderRea = reactive(selectedOrder)
 
 var toShowDrawer = function (row: any) {
-    var order: DispatchOrder = row
-    orderCode.value = order.code
-    showDrawer.value = true
-    selectedOrderRea = order
-    Object.assign(selectedOrderRea, order)
+    var order = row
+
+    let currentStatus = order.current_status
+
+    if(currentStatus == 'active') {
+        orderCode.value = order.code
+        showDrawer.value = true
+        selectedOrderRea = order
+        Object.assign(selectedOrderRea, order)
+    } 
+
 }
 
 import { ElTable } from 'element-plus'
@@ -392,7 +427,7 @@ const handleClose = function(done: () => void) {
 }
 
 
-var tableDataArr: DispatchOrder[] = []
+var tableDataArr = Array()
 var tableData = ref(tableDataArr)
 
 onMounted(() => {
@@ -416,8 +451,16 @@ const loadOrderList = function (pNum: number, pSize: number) {
         .then(function (response) {
 
             if (response.data.code == 200) {
-                console.log(response.data.data)
-                orderStore.list = response.data.data
+                let dataList = response.data.data
+                console.log(dataList)
+                for(let i = 0; i < dataList.length; i ++) {
+                    let item = dataList[i] as DispatchOrderVo
+                    item.start_time = format(item.start_time, 'yyyy-MM-dd HH:ss:mm')
+                    item.end_time = format(item.end_time, 'yyyy-MM-dd HH:ss:mm')
+                    item.create_time = format(item.create_time, 'yyyy-MM-dd HH:ss:mm')
+                    item.service_date = format(item.service_date, 'yyyy-MM-dd')
+                }
+                orderStore.list = dataList
                 tableData.value = orderStore.list
             }
 

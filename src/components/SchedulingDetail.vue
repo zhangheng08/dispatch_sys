@@ -56,6 +56,8 @@ import dayjs from 'dayjs'
 import axios from 'axios'
 import { format } from 'date-fns'
 import { useUserStore } from '@/store/user'
+import { baseUrlStore } from '@/store/BaseUrl'
+var baseUrl = baseUrlStore()
 var userStore = useUserStore()
 
 import type { CalendarDateType, CalendarInstance } from 'element-plus'
@@ -102,7 +104,7 @@ function getWeekDay(): string {
 }
 
 var axio = axios.create({
-    baseURL: 'http://localhost:8088/API',
+    baseURL: baseUrl.host,
     timeout: 3000,
     headers: {
         "Authorization": userStore.accessToken

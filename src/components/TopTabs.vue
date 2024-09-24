@@ -22,15 +22,13 @@ const route = useRoute()
 var cards: TabItem[] = reactive(tabCardStore.list);
 
 onMounted(() => {
-  if(tabCardStore.currentTabKey == '') {
+  if (tabCardStore.currentTabKey == '') {
     tabCardStore.currentTabKey = '/dashbd'
-    cards.push({tabKey:tabCardStore.currentTabKey, title:"数据面板"})
+    cards.push({ tabKey: tabCardStore.currentTabKey, title: "数据面板" })
     router.push(tabCardStore.currentTabKey)
-    emitter.emit('onNavSelected', tabCardStore.currentTabKey)
-  } else {
-    emitter.emit('onNavSelected', tabCardStore.currentTabKey)
   }
- })
+  emitter.emit('onNavSelected', tabCardStore.currentTabKey)
+})
 
 emitter.on('addTab', (obj: any) => {
 
@@ -64,7 +62,7 @@ const clickTabPane = (tab: TabsPaneContext, event: Event) => {
   tabCardStore.currentTabKey = path
   tabCardStore.leftNavActive = path
   emitter.emit('onNavSelected', path)
-  router.push(path)
+  router.push({ 'path': path, 'replace': true })
 }
 
 const removeTab = function (targetKey: string) {
@@ -84,14 +82,17 @@ const removeTab = function (targetKey: string) {
         if (nextTab) {
           activeName = nextTab.tabKey
         }
-        router.back()
+        router.push({ 'path': activeName, 'replace': true })
       } else {
-        router.removeRoute(tab.tabKey)
+        router.removeRoute(targetKey)
       }
+
     }
   })
 
+  tabCardStore.leftNavActive = activeName
   tabCardStore.currentTabKey = activeName
+  emitter.emit('onNavSelected', tabCardStore.currentTabKey)
   tabs = tabs.filter((tab) => tab.tabKey !== targetKey);
   cards.length = 0
   Object.assign(cards, tabs)

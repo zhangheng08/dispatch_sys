@@ -1,7 +1,7 @@
 <template>
-    <el-menu style="height: 100%;" text-color="#fff" class="aside" :collapse="isCollapse" @open="handleOpen" @close="handleClose" router="true"
-        :default-active="tabCardStore.leftNavActive" unique-opened="true">
-        <el-menu-item index="1" class="logo-eara">
+    <el-menu style="height: 100%;" text-color="#fff" active-text-color="#DDF9A4" background-color="#4e8e2f" class="aside" :collapse="isCollapse" @open="handleOpen" @close="handleClose" router="true"
+        :default-active="tabCardStore.leftNavActive" unique-opened="true" >
+        <el-menu-item index="/dashbd" class="logo-eara">
             <!-- <el-image :src="local_logo" style="width: 30px; height: 30px;"/> -->
             <img :src="local_logo" style="width: 30px; height: 30px;" />
             <template #title><span
@@ -150,31 +150,32 @@ onUnmounted(() => {
 
 .logo-eara {
     height: 100px;
-    background-color: #001529;
+    /* background-color: #19861B; */
 }
 
 .logo-eara:hover {
     cursor: default;
+    background-color: #4e8e2f !important;
 }
 
 .aside:not(.el-menu--collapse) {
     width: 200px;
     min-height: 400px;
-    background-color: #001529;
+    /* background-color: #19861B; */
 }
 
 :deep().sub-menu {
-    background-color: #001529;
+    /* background-color: #19861B; */
 }
 
 .sub-menu-item {
-    background-color: #0c2135;
+    background-color: #3e6b27;
     font-size: 12px;
 }
 
 .sub-menu-item:hover,
 .menu-item:hover {
-    background-color: #15314b !important;
+    background-color: #3e6b27 !important;
     cursor: pointer;
 }
 
@@ -197,11 +198,11 @@ onUnmounted(() => {
 
 <style lang="less">
 .el-sub-menu .el-sub-menu__title {
-    background-color: #001529 !important;
+    background-color: #4e8e2f !important;
 }
 
 .el-sub-menu .el-sub-menu__title:hover {
-    background-color: #15314b !important;
+    background-color: #3e6b27 !important;
 }
 
 .el-button:hover {
@@ -212,6 +213,6 @@ onUnmounted(() => {
 .el-menu--collapse {
     width: 75px;
     min-height: 400px;
-    background-color: #001529;
+    background-color: #3e6b27;
 }
 </style>
